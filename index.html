@@ -1,12 +1,254 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vinay-dev</title>
+    <title>Vinaya Durga Sai Teja Gokada - Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #007bff, #6610f2);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            border-radius: 0 0 50px 50px;
+        }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            color: #007bff;
+            font-weight: bold;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #6610f2;
+            padding-bottom: 0.5rem;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            font-weight: bold;
+        }
+        .list-group-item {
+            border: none;
+            padding: 0.75rem 1.25rem;
+        }
+        .badge {
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Resume</h1>
-    <object data="resume-new.pdf" type="application/pdf" width="600" height="700"></object>
+    <!-- Header Section -->
+    <header class="profile-header">
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-img">
+        <h1>Vinaya Durga Sai Teja Gokada</h1>
+        <h4>AEM Tech Lead / Senior Consultant</h4>
+        <p>Palakollu - 534260, Andhra Pradesh | Phone: 8985538982 | Email: gokadasai@gmail.com</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <!-- Professional Summary -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Professional Summary</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <p>AEM Lead Engineer with over 6 years of experience in developing custom components, editable templates, experience fragments, content fragments, sling models, services, and servlets. Extensive expertise in migrating legacy sites to AEMaaCS. Proficient in Java, AEM, Groovy, and front-end technologies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Experience -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Professional Experience</h2>
+
+                <!-- HCL Tech -->
+                <div class="card">
+                    <div class="card-header">Tech Lead | HCL Tech (Remote - Hyderabad) | Aug 2022 - Present</div>
+                    <div class="card-body">
+                        <p><strong>Projects/Clients:</strong> Fiserv, Mastercard, T-Mobile (Adobe)</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Led migration of legacy sites to AEMaaCS.</li>
+                            <li class="list-group-item">Developed custom scripts, OSGi repo init modifications, and component upgrades.</li>
+                            <li class="list-group-item">Managed Cloud Manager activities, including environment variables and GIT operations.</li>
+                            <li class="list-group-item">Created automation scripts for i18n auto-translation, template changes, and dynamic media workflows.</li>
+                            <li class="list-group-item">Authored AEM Groovy scripts for CRUD operations.</li>
+                            <li class="list-group-item">Resolved Java vulnerabilities using BPA and Sonarqube reports.</li>
+                            <li class="list-group-item">Developed GraphQL queries for content fragments and custom scripts for CFM RTE plugins.</li>
+                            <li class="list-group-item"><strong>Achievements:</strong> HCL-ERS Champion Award (June 2023), Value Creation Portal Award for React-AEM integration.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- IBM -->
+                <div class="card">
+                    <div class="card-header">Senior System Engineer | IBM (Remote - Hyderabad) | Nov 2021 - Aug 2022</div>
+                    <div class="card-body">
+                        <p><strong>Projects/Clients:</strong> Abbott Labs, Internal Projects</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Developed custom components, servlets, and experience variations for styling systems.</li>
+                            <li class="list-group-item">Led critical project activities, delivering within tight deadlines.</li>
+                            <li class="list-group-item">Managed global components mapping in a migration project.</li>
+                            <li class="list-group-item"><strong>Achievements:</strong> Business Unit Performance Award (2021).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Infosys -->
+                <div class="card">
+                    <div class="card-header">Senior Systems Engineer | Infosys (Hyderabad) | Feb 2019 - Nov 2021</div>
+                    <div class="card-body">
+                        <p><strong>Projects/Clients:</strong> PwC, M1, Internal Projects</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Created custom components and scripts for Ajax calls.</li>
+                            <li class="list-group-item">Designed HTML-based forms and services.</li>
+                            <li class="list-group-item">Collaborated with ServiceNow team on API data formats.</li>
+                            <li class="list-group-item"><strong>Achievements:</strong> Digital Exemplary Award (2019).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Education</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Bachelor of Technology in Electrical & Electronics Engineering</h5>
+                        <p>University College of Engineering, Kakatiya University | Sep 2012 - Jul 2016</p>
+                        <p>Graduated with First Class Distinction (78.26%).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Skills</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <span class="badge bg-primary">AEMaaCS (Cloud)</span>
+                        <span class="badge bg-primary">AEM 6.XX</span>
+                        <span class="badge bg-primary">Java (AEM)</span>
+                        <span class="badge bg-primary">Groovy (AEM)</span>
+                        <span class="badge bg-primary">HTML</span>
+                        <span class="badge bg-primary">CSS</span>
+                        <span class="badge bg-primary">JavaScript (Vanilla, jQuery)</span>
+                        <span class="badge bg-primary">React (Beginner)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Awards -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Awards</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">HCL-ERS Champion Award (HCL, 2023)</li>
+                            <li class="list-group-item">Business Unit Performance Award (IBM, 2021)</li>
+                            <li class="list-group-item">Digital Exemplary Award (Infosys, 2019)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hobbies -->
+        <div class="row">
+            <div class="col-12">
+                <h2 class="section-title">Hobbies</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <span class="badge bg-secondary">Badminton</span>
+                        <span class="badge bg-secondary">BGMI (Mobile Gaming)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Vinaya Durga Sai Teja Gokada. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS and Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
